@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Claude Code Agents Workspace Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-color: #030712;
+      --bg-grid: rgba(99, 102, 241, 0.04);
+      --card-bg: rgba(17, 24, 39, 0.7);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --text-primary: #f3f4f6;
+      --text-secondary: #9ca3af;
+      
+      --primary: #6366f1;
+      --primary-glow: rgba(99, 102, 241, 0.15);
+      --secondary: #a855f7;
+      --secondary-glow: rgba(168, 85, 247, 0.15);
+      --success: #10b981;
+      --success-glow: rgba(16, 185, 129, 0.15);
+      --accent: #f43f5e;
+      --accent-glow: rgba(244, 63, 94, 0.15);
+      
+      --font-display: 'Outfit', sans-serif;
+      --font-body: 'Space Grotesk', sans-serif;
+      --transition-speed: 0.3s;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.1) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(168, 85, 247, 0.1) 0%, transparent 40%),
+        linear-gradient(var(--bg-grid) 1px, transparent 1px),
+        linear-gradient(90deg, var(--bg-grid) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px;
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      min-height: 100vh;
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 20px 80px 20px;
+    }
+
+    /* Header */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 60px;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 24px;
+      backdrop-filter: blur(10px);
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-icon {
+      width: 42px;
+      height: 42px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 22px;
+      color: white;
+      box-shadow: 0 0 20px var(--primary-glow);
+    }
+
+    .logo-text h1 {
+      font-family: var(--font-display);
+      font-size: 24px;
+      font-weight: 700;
+      background: linear-gradient(to right, #ffffff, #d1d5db);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .logo-text p {
+      font-size: 12px;
+      color: var(--text-secondary);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .badge {
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      color: var(--success);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .badge-dot {
+      width: 8px;
+      height: 8px;
+      background-color: var(--success);
+      border-radius: 50%;
+      box-shadow: 0 0 10px var(--success);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(0.9); opacity: 0.6; }
+      50% { transform: scale(1.2); opacity: 1; }
+      100% { transform: scale(0.9); opacity: 0.6; }
+    }
+
+    /* Intro Section */
+    .hero-section {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    .hero-section h2 {
+      font-family: var(--font-display);
+      font-size: 48px;
+      font-weight: 800;
+      margin-bottom: 16px;
+      background: linear-gradient(135deg, #ffffff 30%, #a855f7 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -1px;
+    }
+
+    .hero-section p {
+      font-size: 18px;
+      color: var(--text-secondary);
+      max-width: 650px;
+      margin: 0 auto;
+    }
+
+    /* Pipeline / Workflow visualization */
+    .pipeline-section {
+      margin-bottom: 60px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 30px;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .pipeline-title {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--text-primary);
+    }
+
+    .pipeline-flow {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 15px;
+      position: relative;
+    }
+
+    .pipeline-step {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 16px;
+      padding: 20px;
+      text-align: center;
+      position: relative;
+      transition: all var(--transition-speed);
+    }
+
+    .pipeline-step:hover {
+      background: rgba(255, 255, 255, 0.06);
+      transform: translateY(-4px);
+      border-color: rgba(99, 102, 241, 0.3);
+    }
+
+    .step-number {
+      width: 28px;
+      height: 28px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 12px auto;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .pipeline-step:nth-child(1) .step-number { background: rgba(244, 63, 94, 0.2); color: var(--accent); }
+    .pipeline-step:nth-child(2) .step-number { background: rgba(168, 85, 247, 0.2); color: var(--secondary); }
+    .pipeline-step:nth-child(3) .step-number { background: rgba(99, 102, 241, 0.2); color: var(--primary); }
+    .pipeline-step:nth-child(4) .step-number { background: rgba(16, 185, 129, 0.2); color: var(--success); }
+
+    .step-name {
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 15px;
+      margin-bottom: 6px;
+    }
+
+    .step-desc {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    /* Grid layout for agents cards */
+    .agents-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 30px;
+      margin-bottom: 60px;
+    }
+
+    .agent-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 35px;
+      position: relative;
+      transition: all var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
+      backdrop-filter: blur(12px);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+    }
+
+    .agent-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+    }
+
+    .agent-card.fetcher::before { background: linear-gradient(90deg, var(--accent), var(--secondary)); }
+    .agent-card.builder::before { background: linear-gradient(90deg, var(--secondary), var(--primary)); }
+    .agent-card.writer::before { background: linear-gradient(90deg, var(--primary), var(--success)); }
+    .agent-card.reviewer::before { background: linear-gradient(90deg, var(--success), var(--accent)); }
+
+    .agent-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+
+    .agent-card.fetcher:hover { box-shadow: 0 15px 30px var(--accent-glow); }
+    .agent-card.builder:hover { box-shadow: 0 15px 30px var(--secondary-glow); }
+    .agent-card.writer:hover { box-shadow: 0 15px 30px var(--primary-glow); }
+    .agent-card.reviewer:hover { box-shadow: 0 15px 30px var(--success-glow); }
+
+    .agent-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 20px;
+    }
+
+    .agent-title-area h3 {
+      font-family: var(--font-display);
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .agent-meta {
+      display: flex;
+      gap: 8px;
+    }
+
+    .meta-tag {
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .meta-tag.model-haiku {
+      background: rgba(244, 63, 94, 0.1);
+      border: 1px solid rgba(244, 63, 94, 0.2);
+      color: var(--accent);
+    }
+
+    .meta-tag.model-sonnet {
+      background: rgba(168, 85, 247, 0.1);
+      border: 1px solid rgba(168, 85, 247, 0.2);
+      color: var(--secondary);
+    }
+
+    .meta-tag.scope {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--text-secondary);
+    }
+
+    .agent-desc {
+      color: var(--text-secondary);
+      font-size: 14px;
+      margin-bottom: 24px;
+      flex-grow: 1;
+    }
+
+    .agent-section-title {
+      font-size: 12px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .agent-instruction-list {
+      list-style-type: none;
+      margin-bottom: 24px;
+    }
+
+    .agent-instruction-list li {
+      font-size: 13px;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .agent-instruction-list li::before {
+      content: "→";
+      color: var(--primary);
+      font-weight: bold;
+    }
+
+    .agent-card.fetcher .agent-instruction-list li::before { color: var(--accent); }
+    .agent-card.builder .agent-instruction-list li::before { color: var(--secondary); }
+    .agent-card.writer .agent-instruction-list li::before { color: var(--primary); }
+    .agent-card.reviewer .agent-instruction-list li::before { color: var(--success); }
+
+    .command-box {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 13px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all var(--transition-speed);
+    }
+
+    .command-box code {
+      color: #38bdf8;
+      overflow-x: auto;
+      white-space: nowrap;
+      margin-right: 10px;
+    }
+
+    .copy-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--text-secondary);
+      border-radius: 6px;
+      padding: 4px 8px;
+      font-size: 11px;
+      cursor: pointer;
+      font-family: var(--font-body);
+      transition: all var(--transition-speed);
+    }
+
+    .copy-btn:hover {
+      background: rgba(255, 255, 255, 0.15);
+      color: var(--text-primary);
+    }
+
+    /* Terminal Quick Start */
+    .terminal-section {
+      background: rgba(8, 12, 20, 0.95);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+      margin-bottom: 60px;
+    }
+
+    .terminal-header {
+      background: rgba(255, 255, 255, 0.03);
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--card-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .terminal-dots {
+      display: flex;
+      gap: 8px;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    .dot.red { background-color: #ef4444; }
+    .dot.yellow { background-color: #f59e0b; }
+    .dot.green { background-color: #10b981; }
+
+    .terminal-title {
+      font-size: 13px;
+      color: var(--text-secondary);
+      font-family: monospace;
+    }
+
+    .terminal-body {
+      padding: 24px;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 14px;
+      color: #10b981;
+      line-height: 1.5;
+    }
+
+    .terminal-line {
+      margin-bottom: 12px;
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    .terminal-prompt {
+      color: #38bdf8;
+      margin-right: 10px;
+      user-select: none;
+    }
+
+    .terminal-command {
+      color: #f3f4f6;
+    }
+
+    .terminal-output {
+      color: var(--text-secondary);
+      width: 100%;
+      margin-top: 4px;
+      white-space: pre-wrap;
+    }
+
+    .terminal-link {
+      color: var(--secondary);
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    /* Quick Info Section */
+    .info-footer {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 30px;
+    }
+
+    .footer-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 30px;
+      backdrop-filter: blur(12px);
+    }
+
+    .footer-card h4 {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: var(--text-primary);
+    }
+
+    .resource-links {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .resource-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 16px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      border-radius: 12px;
+      transition: all var(--transition-speed);
+      text-decoration: none;
+      color: var(--text-primary);
+    }
+
+    .resource-item:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(99, 102, 241, 0.2);
+      transform: translateX(4px);
+    }
+
+    .resource-name {
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+    .resource-path {
+      font-size: 12px;
+      color: var(--text-secondary);
+      font-family: monospace;
+    }
+
+    @media (max-width: 900px) {
+      .agents-grid, .info-footer {
+        grid-template-columns: 1fr;
+      }
+      .pipeline-flow {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header>
+      <div class="logo-container">
+        <div class="logo-icon">C</div>
+        <div class="logo-text">
+          <h1>Claude Code Agents</h1>
+          <p>Local Workspace Dashboard</p>
+        </div>
+      </div>
+      <div class="badge">
+        <div class="badge-dot"></div>
+        Workspace Ready
+      </div>
+    </header>
+
+    <!-- Hero -->
+    <div class="hero-section">
+      <h2>Your Local Agent Orchestra</h2>
+      <p>Automate your designs-to-website build workflow. These specialized AI agents run autonomously inside your local environment using Claude Code.</p>
+    </div>
+
+    <!-- Pipeline -->
+    <div class="pipeline-section">
+      <div class="pipeline-title">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary);"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+        Pipeline Architecture & Orchestration
+      </div>
+      <div class="pipeline-flow">
+        <div class="pipeline-step">
+          <div class="step-number">1</div>
+          <div class="step-name">Design Ready</div>
+          <div class="step-desc">Figma / Stitch Project</div>
+        </div>
+        <div class="pipeline-step">
+          <div class="step-number">2</div>
+          <div class="step-name">design-fetcher</div>
+          <div class="step-desc">Retrieve screen code</div>
+        </div>
+        <div class="pipeline-step">
+          <div class="step-number">3</div>
+          <div class="step-name">website-builder</div>
+          <div class="step-desc">Generate HTML/CSS</div>
+        </div>
+        <div class="pipeline-step">
+          <div class="step-number">4</div>
+          <div class="step-name">content-writer</div>
+          <div class="step-desc">Add branded copy</div>
+        </div>
+        <div class="pipeline-step">
+          <div class="step-number">5</div>
+          <div class="step-name">qa-reviewer</div>
+          <div class="step-desc">Scan and review files</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Grid of Agents -->
+    <div class="agents-grid">
+      <!-- Agent 1 -->
+      <div class="agent-card fetcher">
+        <div class="agent-header">
+          <div class="agent-title-area">
+            <h3>design-fetcher</h3>
+            <div class="agent-meta">
+              <span class="meta-tag model-haiku">Haiku</span>
+              <span class="meta-tag scope">Project</span>
+            </div>
+          </div>
+        </div>
+        <p class="agent-desc">Connects to your Google Stitch project via MCP, pulls design mockups, and saves them locally as reference HTML/CSS assets.</p>
+        <div class="agent-section-title">Core Instructions</div>
+        <ul class="agent-instruction-list">
+          <li>Ask for Stitch project ID.</li>
+          <li>Fetch design screens via Stitch MCP.</li>
+          <li>Save raw files to <code>/reference/screens/</code>.</li>
+          <li>Generate a summary mapping index file.</li>
+        </ul>
+        <div class="command-box">
+          <code>@design-fetcher fetch screens</code>
+          <button class="copy-btn" onclick="copyText('@design-fetcher fetch screens')">Copy</button>
+        </div>
+      </div>
+
+      <!-- Agent 2 -->
+      <div class="agent-card builder">
+        <div class="agent-header">
+          <div class="agent-title-area">
+            <h3>website-builder</h3>
+            <div class="agent-meta">
+              <span class="meta-tag model-sonnet">Sonnet</span>
+              <span class="meta-tag scope">Project</span>
+            </div>
+          </div>
+        </div>
+        <p class="agent-desc">Translates screen mockups into production-ready semantic HTML and modular CSS code using tokens defined in your Design Strategy.</p>
+        <div class="agent-section-title">Core Instructions</div>
+        <ul class="agent-instruction-list">
+          <li>Read design strategy and brand tokens.</li>
+          <li>Convert screens to responsive layouts.</li>
+          <li>Save clean source files to <code>/src/</code>.</li>
+          <li>Launch dev server to preview locally.</li>
+        </ul>
+        <div class="command-box">
+          <code>@website-builder build site</code>
+          <button class="copy-btn" onclick="copyText('@website-builder build site')">Copy</button>
+        </div>
+      </div>
+
+      <!-- Agent 3 -->
+      <div class="agent-card writer">
+        <div class="agent-header">
+          <div class="agent-title-area">
+            <h3>content-writer</h3>
+            <div class="agent-meta">
+              <span class="meta-tag model-sonnet">Sonnet</span>
+              <span class="meta-tag scope">Project</span>
+            </div>
+          </div>
+        </div>
+        <p class="agent-desc">Crafts tailored, conversational copy matching your brand voice guidelines. Eradicates corporate jargon and buzzwords.</p>
+        <div class="agent-section-title">Core Instructions</div>
+        <ul class="agent-instruction-list">
+          <li>Extract brand voice from design strategy.</li>
+          <li>Formulate headlines, subheadings, and CTAs.</li>
+          <li>Write clear, engaging, human copy.</li>
+          <li>Save copy to <code>/content/</code> pages.</li>
+        </ul>
+        <div class="command-box">
+          <code>@content-writer write copy</code>
+          <button class="copy-btn" onclick="copyText('@content-writer write copy')">Copy</button>
+        </div>
+      </div>
+
+      <!-- Agent 4 -->
+      <div class="agent-card reviewer">
+        <div class="agent-header">
+          <div class="agent-title-area">
+            <h3>qa-reviewer</h3>
+            <div class="agent-meta">
+              <span class="meta-tag model-haiku">Haiku</span>
+              <span class="meta-tag scope">Project</span>
+            </div>
+          </div>
+        </div>
+        <p class="agent-desc">Compares final built pages against reference mockups and strict brand compliance rules, documenting errors into a central report.</p>
+        <div class="agent-section-title">Core Instructions</div>
+        <ul class="agent-instruction-list">
+          <li>Check code for hardcoded color tokens.</li>
+          <li>Validate layout matching reference screens.</li>
+          <li>Verify typography and grid constraints.</li>
+          <li>Write detailed summary to <code>qa-report.md</code>.</li>
+        </ul>
+        <div class="command-box">
+          <code>@qa-reviewer review built site</code>
+          <button class="copy-btn" onclick="copyText('@qa-reviewer review built site')">Copy</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Terminal Simulator -->
+    <div class="terminal-section">
+      <div class="terminal-header">
+        <div class="terminal-dots">
+          <div class="dot red"></div>
+          <div class="dot yellow"></div>
+          <div class="dot green"></div>
+        </div>
+        <div class="terminal-title">bash - Claude Code terminal</div>
+      </div>
+      <div class="terminal-body">
+        <div class="terminal-line">
+          <span class="terminal-prompt">user@workspace:~/claude-agent-demo$</span>
+          <span class="terminal-command">claude</span>
+        </div>
+        <div class="terminal-line">
+          <span class="terminal-output">Starting Claude Code (v0.12.0)...
+Welcome! Type /help to see available commands or prompt me to start coding.</span>
+        </div>
+        <div class="terminal-line">
+          <span class="terminal-prompt">claude ></span>
+          <span class="terminal-command">/agents</span>
+        </div>
+        <div class="terminal-line">
+          <span class="terminal-output">Available Custom Agents (Project Scope):
+- <b>design-fetcher</b> [haiku]
+- <b>website-builder</b> [sonnet]
+- <b>content-writer</b> [sonnet]
+- <b>qa-reviewer</b> [haiku]</span>
+        </div>
+        <div class="terminal-line">
+          <span class="terminal-prompt">claude ></span>
+          <span class="terminal-command">Run these agents in order: @design-fetcher, @website-builder, @qa-reviewer</span>
+        </div>
+        <div class="terminal-line">
+          <span class="terminal-output">Spawning subagent <b>design-fetcher</b>... Done. (Fetched 4 screens)
+Spawning subagent <b>website-builder</b>... Done. (Generated index.html, services.html, contact.html)
+Spawning subagent <b>qa-reviewer</b>... Done. (QA Report written to qa-report.md: 0 issues found!)
+
+Pipeline successfully completed! Preview your website at: <span class="terminal-link" onclick="window.open('http://localhost:3000')">http://localhost:3000</span></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Workspace Links & Info -->
+    <div class="info-footer">
+      <div class="footer-card">
+        <h4>How to Orchestrate Your Pipeline</h4>
+        <p style="font-size: 14px; color: var(--text-secondary); margin-bottom: 16px;">
+          You can tell Claude Code to coordinate all agents sequentially. This chain-of-agent workflow allows design assets to pass from screen fetcher to generator to reviewer without manual intervention.
+        </p>
+        <div class="command-box" style="margin-top: 10px;">
+          <code style="white-space: pre-wrap; font-size: 12px; line-height: 1.4;">Run in order:
+1. @design-fetcher fetch screens from Stitch project_id
+2. @website-builder build site components
+3. @qa-reviewer run visual and styling checks</code>
+          <button class="copy-btn" onclick="copyText('Run in order:\n1. @design-fetcher fetch screens from Stitch project_id\n2. @website-builder build site components\n3. @qa-reviewer run visual and styling checks')">Copy</button>
+        </div>
+      </div>
+
+      <div class="footer-card">
+        <h4>Workspace Assets</h4>
+        <div class="resource-links">
+          <a href="design-strategy.md" class="resource-item">
+            <span class="resource-name">Design Strategy</span>
+            <span class="resource-path">design-strategy.md</span>
+          </a>
+          <a href="package.json" class="resource-item">
+            <span class="resource-name">NPM Config</span>
+            <span class="resource-path">package.json</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function copyText(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        alert('Command copied to clipboard: ' + text);
+      }).catch(err => {
+        console.error('Failed to copy text: ', err);
+      });
+    }
+  </script>
+</body>
+</html>

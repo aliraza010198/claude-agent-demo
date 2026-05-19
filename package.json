@@ -1,0 +1,15 @@
+{
+  "name": "claude-agent-demo",
+  "version": "1.0.0",
+  "description": "Workspace for Claude Code agents",
+  "main": "src/index.html",
+  "scripts": {
+    "dev": "npx -y http-server src -p 3000"
+  },
+  "keywords": [
+    "claude-code",
+    "agents"
+  ],
+  "author": "",
+  "license": "ISC"
+}
