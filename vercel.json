@@ -1,0 +1,11 @@
+{
+  "cleanUrls": true,
+  "rewrites": [
+    { "source": "/design-strategy.md", "destination": "/design-strategy.md" },
+    { "source": "/package.json", "destination": "/package.json" },
+    { "source": "/README.md", "destination": "/README.md" },
+    { "source": "/", "destination": "/src/index.html" },
+    { "source": "/index.css", "destination": "/src/index.css" },
+    { "source": "/(.*)", "destination": "/src/$1" }
+  ]
+}
